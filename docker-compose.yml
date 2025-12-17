@@ -1,0 +1,58 @@
+version: "3.9"
+
+services:
+  server:
+    build:
+      context: .
+      target: server
+    container_name: project_mkh_server
+    environment:
+      - RLE_STORAGE_DIR=/usr/src/project_mkh/data
+    ports:
+      - "9090:9090"
+    command: ["./project_mkh", "9090"]
+    stdin_open: true
+    tty: true
+
+  client_cpp:
+    build:
+      context: .
+      target: client_cpp
+    container_name: project_mkh_client_cpp
+    stdin_open: true
+    tty: true
+    depends_on:
+      - server
+
+  client_py:
+    build:
+      context: .
+      target: client_py
+    container_name: project_mkh_client_py
+    stdin_open: true
+    tty: true
+    depends_on:
+      - server
+
+  tests:
+    build:
+      context: .
+      target: server
+    container_name: project_mkh_tests
+    working_dir: /usr/src/project_mkh/build
+    command: ["./tests/unit_tests"]
+    stdin_open: true
+    tty: true
+
+
+  web:
+    build:
+      context: ./web
+    container_name: project_mkh_web
+    ports:
+      - "3000:3000"
+    environment:
+      FILE_SERVER_HOST: server
+      FILE_SERVER_PORT: 9090
+    depends_on:
+      - server
