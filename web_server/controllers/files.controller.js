@@ -27,8 +27,13 @@ async function getById(req, res, next) {
   }
 }
 
-async function update(req, res) {
-  res.status(400).json({ error: 'Update not supported' });
+async function update(req, res, next) {
+  try {
+    await filesService.update(req.userId, req.params.id, req.body || {});
+    res.status(204).end();
+  } catch (err) {
+    next(err);
+  }
 }
 
 async function remove(req, res, next) {

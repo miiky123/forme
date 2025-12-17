@@ -66,10 +66,17 @@ function sendCommand(commandLine) {
       }
 
       if (stage === 'separator') {
-        const sepIndex = buffer.indexOf('\n\n');
-        if (sepIndex === -1) return;
-        buffer = buffer.slice(sepIndex + 2);
+        if (buffer.startsWith('\r\n')) {
+          buffer = buffer.slice(2);
+        } else if (buffer[0] === '\n') {
+          buffer = buffer.slice(1);
+        } else {
+          cleanup(new UpstreamError('Upstream protocol error'));
+          return;
+        }
         stage = 'body';
+        processBuffer();
+        return;
       }
 
       if (stage === 'body') {

@@ -57,9 +57,22 @@ async function remove(userId, id) {
   filesRepo.deleteById(userId, id);
 }
 
+async function update(userId, id, payload) {
+  const name = payload && payload.name;
+  if (!name || name.trim() === '') {
+    throw new BadRequestError('Name is required');
+  }
+
+  const record = filesRepo.rename(userId, id, name);
+  if (!record) {
+    throw new NotFoundError('File not found');
+  }
+}
+
 module.exports = {
   listRoot,
   create,
   getById,
-  remove
+  remove,
+  update
 };
