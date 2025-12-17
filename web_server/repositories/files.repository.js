@@ -49,6 +49,15 @@ function searchByName(userId, query) {
   );
 }
 
+function rename(userId, id, newName) {
+  const record = findById(userId, id);
+  if (record) {
+    record.name = newName;
+    return record;
+  }
+  return null;
+}
+
 module.exports = {
   create,
   updateBackendKey,
@@ -56,5 +65,6 @@ module.exports = {
   findByBackendKey,
   deleteById,
   listByUser,
-  searchByName
+  searchByName,
+  rename
 };
