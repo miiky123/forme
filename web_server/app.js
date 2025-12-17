@@ -8,7 +8,7 @@ const filesRoutes = require('./routes/files.routes');
 const permissionsRoutes = require('./routes/permissions.routes');
 const searchRoutes = require('./routes/search.routes');
 
-
+const errorHandler = require('./middleware/error.middleware');
 
 app.use(express.json());
 
@@ -29,9 +29,10 @@ app.use('/api', permissionsRoutes);
 
 app.use('/api/search', searchRoutes);
 
-
 app.use((req, res) => {
   res.status(404).json({ error: 'Not Found' });
 });
+
+app.use(errorHandler);
 
 module.exports = app;

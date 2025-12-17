@@ -1,21 +1,43 @@
-function listRoot(req, res) {
-  res.status(501).json({ error: 'Not implemented' });
+const filesService = require('../services/files.service');
+
+async function listRoot(req, res, next) {
+  try {
+    const files = await filesService.listRoot(req.userId);
+    res.json(files);
+  } catch (err) {
+    next(err);
+  }
 }
 
-function create(req, res) {
-  res.status(501).json({ error: 'Not implemented' });
+async function create(req, res, next) {
+  try {
+    const file = await filesService.create(req.userId, req.body || {});
+    res.status(201).location(`/api/files/${file.id}`).end();
+  } catch (err) {
+    next(err);
+  }
 }
 
-function getById(req, res) {
-  res.status(501).json({ error: 'Not implemented' });
+async function getById(req, res, next) {
+  try {
+    const file = await filesService.getById(req.userId, req.params.id);
+    res.json(file);
+  } catch (err) {
+    next(err);
+  }
 }
 
-function update(req, res) {
-  res.status(501).json({ error: 'Not implemented' });
+async function update(req, res) {
+  res.status(400).json({ error: 'Update not supported' });
 }
 
-function remove(req, res) {
-  res.status(501).json({ error: 'Not implemented' });
+async function remove(req, res, next) {
+  try {
+    await filesService.remove(req.userId, req.params.id);
+    res.status(204).end();
+  } catch (err) {
+    next(err);
+  }
 }
 
 module.exports = {
